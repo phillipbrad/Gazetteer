@@ -31,7 +31,7 @@ if (!isset($_GET['iso_a2'])) {
 
 
 $country = $_GET['iso_a2'];
-$username = $_ENV['GEONAMES_USERNAME'];
+$username = $_ENV['GEONAMES_USERNAME'] ?? getenv('GEONAMES_USERNAME');
 
 $url = "http://api.geonames.org/searchJSON?q=archaeological&country=$country&maxRows=50&username=$username";
 

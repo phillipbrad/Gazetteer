@@ -13,7 +13,7 @@ header('Content-Type: application/json');
 $latitude = $_GET['lat'];
 $longitude = $_GET['lng'];
 
-$apikey = $_ENV['OPENWEATHER_API_KEY'];
+$apikey = $_ENV['OPENWEATHER_API_KEY'] ?? getenv('OPENWEATHER_API_KEY');
 
 $url = "https://api.openweathermap.org/data/3.0/onecall?lat={$latitude}&lon={$longitude}&units=metric&exclude=hourly,minutely,alerts&appid={$apikey}"; 
 

@@ -30,7 +30,7 @@ if (!isset($_GET['iso_a2'])) {
 }
 
 $iso_a2 = $_GET['iso_a2'];
-$geonames_username = $_ENV['GEONAMES_USERNAME'];
+$geonames_username = $_ENV['GEONAMES_USERNAME'] ?? getenv('GEONAMES_USERNAME');
 
 
 $url = "http://api.geonames.org/searchJSON?country=$iso_a2&maxRows=100&featureCode=PPL&orderby=population&username=$geonames_username";

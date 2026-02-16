@@ -12,7 +12,7 @@ header('Access-Control-Allow-Headers: Content-Type, Authorization');
 header('Content-Type: application/json');
 
 $countryName = $_GET['countryName'];
-$apikey = $_ENV['NEWSAPI_KEY']; 
+$apikey = $_ENV['NEWSAPI_KEY'] ?? getenv('NEWSAPI_KEY'); 
 
 $url = "https://newsapi.org/v2/everything?q=" . urlencode($countryName) . "&pageSize=5&apiKey=$apikey";
 

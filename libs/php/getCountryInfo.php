@@ -29,7 +29,7 @@ if (!isset($_GET['iso2']) || empty($_GET['iso2'])) {
 }
 
 $iso2 = $_GET['iso2'];
-$username = $_ENV['GEONAMES_USERNAME'];
+$username = $_ENV['GEONAMES_USERNAME'] ?? getenv('GEONAMES_USERNAME');
 
 $url = "http://api.geonames.org/countryInfoJSON?country=$iso2&username=$username";
 

@@ -27,7 +27,7 @@ if (!isset($_GET['iso_a2'])) {
 
 $iso_a2 = strtoupper(trim($_GET['iso_a2']));
 
-$apiKey = $_ENV['API_NINJAS_API_KEY'];
+$apiKey = $_ENV['API_NINJAS_API_KEY'] ?? getenv('API_NINJAS_API_KEY');
 $url = "https://api.api-ninjas.com/v1/airports?country=$iso_a2";
 
 $ch = curl_init();

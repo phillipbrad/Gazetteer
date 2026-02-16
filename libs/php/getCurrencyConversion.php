@@ -17,7 +17,7 @@ header('Access-Control-Allow-Origin: *');
 $executionStartTime = microtime(true);
 
 
-$api_key = $_ENV['RAPIDAPI_KEY'];
+$api_key = $_ENV['RAPIDAPI_KEY'] ?? getenv('RAPIDAPI_KEY');
 
 // Get currency parameter from request, default to USD
 $currency = isset($_GET['currency']) ? strtoupper($_GET['currency']) : 'USD';
