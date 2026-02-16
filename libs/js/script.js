@@ -709,6 +709,7 @@ function getAirports(iso_a2) {
 
 
 function getCurrencyConversion(currency) {
+    console.log('getCurrencyConversion called with currency:', currency);
 
     $.ajax({
         url: 'libs/php/getCurrencyConversion.php',
@@ -716,6 +717,7 @@ function getCurrencyConversion(currency) {
         data: { currency: currency },
         dataType: 'json',
         success: function (response) {
+            console.log('Currency API response:', response);
 
             if (response.status === "success") {
                 let modalBody = $("#currencyModalBody");
@@ -778,13 +780,14 @@ function getCurrencyConversion(currency) {
                 });
 
             } else {
-                console.error("Invalid response:", response);
-                $("#currencyModalBody").html(`<p class="text-danger">Unable to fetch exchange rates.</p>`);
+                console.error("Invalid response - no status=success:", response);
+                $("#currencyModalBody").html(`<p class="text-danger">Unable to fetch exchange rates. Check console for details.</p>`);
             }
         },
         error: function (xhr, status, error) {
             console.error("AJAX Error:", status, error);
-            $("#currencyModalBody").html(`<p class="text-danger">Error fetching currency data.</p>`);
+            console.error("Response text:", xhr.responseText);
+            $("#currencyModalBody").html(`<p class="text-danger">Error fetching currency data: ${status}</p>`);
         }
     });
 }
