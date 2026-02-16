@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Gazetter</title>
+  <meta name="description"
+    content="Gazetteer is a web application that allows users to search for a location and get information about it.">
+  <meta name="author" content="Phillip Bradshaw">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="apple-touch-icon" sizes="180x180" href="libs/css/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="libs/css/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="libs/css/images/favicon-16x16.png">
+  <link rel="manifest" href="libs/css/images/site.webmanifest">
+  <link rel="stylesheet" href="libs/css/leaflet.css" />
+  <link rel="stylesheet" href="libs/css/easy-button.css" />
+  <link rel="stylesheet" href="libs/css/leaflet.extra-markers.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+  <link href="libs/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="libs/css/MarkerCluster.css">
+  <link rel="stylesheet" href="libs/css/MarkerCluster.Default.css">
+  <link rel="stylesheet" href="libs/css/styles.css">
+
+</head>
+
+<body>
+  <div id="preloader"></div>
+  <div id="appContent">
+    <span id="selectContainer">
+      <select id="countrySelect" class="form-select shadow-sm">
+        <option value="AF">Afghanistan</option>
+      </select>
+    </span>
+
+    <div id="map"></div>
+
+
+    <!-- Weather Modal -->
+    <div id="weatherModal" class="modal" tabindex="-1">
+      <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content shadow">
+          <div class="modal-header bg-success bg-gradient text-white">
+            <h5 class="modal-title" id="weatherModalLabel">Weather</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <!-- Preloader -->
+            <div id="weatherPreloader" class="text-center">
+              <div class="spinner-border text-success" role="status">
+                <span class="visually-hidden">Loading...</span>
+              </div>
+              <p>Loading weather data...</p>
+            </div>
+            <div id="weatherModalData">
+              <!-- Current Weather Section -->
+              <div id="currentWeatherContainer" class="weather-section text-center" style="display:none;">
+                <div class="border p-3 rounded">
+                  <p><strong>Today</strong></p>
+                  <img id="currentWeatherIcon" src="" alt="Weather Icon" style="width: 50px; height: 50px;">
+                  <p id="currentTemp"><strong>Loading...</strong></p>
+                  <p id="currentDescription">Loading...</p>
+                </div>
+              </div>
+
+              <!-- Forecast Section -->
+              <div id="forecastContainer" class="row" style="display:none;">
+                
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Wikipedia Modal -->
+    <div id="wikipediaModal" class="modal fade" tabindex="-1" aria-labelledby="wikipediaModalLabel">
+      <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content shadow">
+          <div class="modal-header bg-primary bg-gradient text-white">
+            <h5 class="modal-title" id="wikipediaModalLabel">Wikipedia Summary</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div id="wikipediaSummaryData">Loading...</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- News Modal -->
+<div class="modal fade" id="newsModal" tabindex="-1" aria-labelledby="newsModalLabel">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header bg-danger bg-gradient text-white">
+        <h5 class="modal-title" id="newsModalLabel">Latest News</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" id="newsContent">
+        <!-- News articles will be injected here -->
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+    <!-- Country Info Modal -->
+    <div id="countryInfoModal" class="modal" data-bs-backdrop="false" tabindex="-1">
+      <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content shadow">
+          <div class="modal-header bg-info bg-gradient text-white">
+            <h5 class="modal-title">Country Profile</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <table class="table table-striped">
+              <tr>
+                <td class="text-center"><i class="fa-solid fa-flag fa-xl text-info"></i></td>
+                <td>Country</td>
+                <td class="text-end" id="countryNameData">Loading...</td>
+              </tr>
+              <tr>
+                <td class="text-center"><i class="fa-solid fa-city fa-xl text-info"></i></td>
+                <td>Capital</td>
+                <td class="text-end" id="capitalData">Loading...</td>
+              </tr>
+              <tr>
+                <td class="text-center"><i class="fa-solid fa-globe fa-xl text-info"></i></td>
+                <td>Continent</td>
+                <td class="text-end" id="continentData">Loading...</td>
+              </tr>
+              <tr>
+                <td class="text-center"><i class="fa-solid fa-users fa-xl text-info"></i></td>
+                <td>Population</td>
+                <td class="text-end" id="populationData">Loading...</td>
+              </tr>
+              <tr>
+                <td class="text-center"><i class="fa-solid fa-money-bill fa-xl text-info"></i></td>
+                <td>Currency</td>
+                <td class="text-end" id="currencyData">Loading...</td>
+              </tr>
+              <tr>
+                <td class="text-center"><i class="fa-solid fa-map fa-xl text-info"></i></td>
+                <td>Area</td>
+                <td class="text-end" id="areaData">Loading...</td>
+              </tr>
+              <tr>
+                <td class="text-center"><i class="fa-solid fa-language fa-xl text-info"></i></td>
+                <td>Languages</td>
+                <td class="text-end" id="languagesData">Loading...</td>
+              </tr>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+ <!-- Currency Modal -->
+<div class="modal fade" id="currencyModal" tabindex="-1" aria-labelledby="currencyModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered modal-sm">
+    <div class="modal-content">
+      <div class="modal-header bg-dark text-white">
+        <h5 class="modal-title" id="currencyModalLabel">Currency Conversion</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" id="currencyModalBody">
+        <!-- Base Currency Display -->
+        <div class="mb-3">
+          <h6 class="fw-bold">Base Currency:</h6>
+          <span id="baseCurrencyDisplay">USD</span> 
+        </div>
+
+        <!-- Currency Amount Input -->
+        <div class="mb-3">
+          <label for="currencyAmount" class="form-label fw-bold">Enter Amount:</label>
+          <input type="number" id="currencyAmount" class="form-control text-center w-50 mx-auto" value="1" min="0" step="0.01">
+        </div>
+
+        <!-- Currency Comparison Dropdown -->
+        <div class="mb-3">
+          <label for="currencySelect" class="form-label fw-bold">Compare Against:</label>
+          <select id="currencySelect" class="form-select">
+            <!-- Dynamically populated currencies will go here -->
+          </select>
+        </div>
+
+        <!-- Exchange Rates Section -->
+        <div class="row row-cols-1 row-cols-md-2 g-3" id="exchangeRates">
+          <!-- Converted amounts will be injected here dynamically -->
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+  <script src="libs/js/jquery-3.7.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="libs/js/leaflet.js"></script>
+  <script src="libs/js/easy-button.js"></script>
+  <script src="libs/js/leaflet.extra-markers.min.js"></script>
+  <script src="libs/js/leaflet.markercluster.js"></script>
+  <script src="libs/js/date-en-GB.js"></script>
+  <script src="libs/js/numeral.min.js"></script>
+  <script src="libs/js/script.js"></script>
+
+
+</body>
+
+</html>

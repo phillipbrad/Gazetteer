@@ -1,0 +1,6 @@
+.env
+/vendor
+/composer.lock
+/package-lock.json
+/package.json
+libs/php/gazetteer.code-workspace
