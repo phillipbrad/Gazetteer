@@ -410,6 +410,20 @@ function getCountryInfo(iso_a2) {
         data: { iso2: iso_a2 },
         dataType: 'json',
         success: function (response) {
+            console.log('Country info response:', response);
+
+            // Check if response has the expected structure
+            if (!response.geonames || !response.geonames[0]) {
+                console.error('Invalid country info response structure:', response);
+                $('#countryNameData').text('N/A');
+                $('#capitalData').text('N/A');
+                $('#continentData').text('N/A');
+                $('#populationData').text('N/A');
+                $('#currencyData').text('N/A');
+                $('#areaData').text('N/A');
+                $('#languagesData').text('N/A');
+                return;
+            }
 
             var countryData = response.geonames[0];
             var geonameId = response.geonameId;
