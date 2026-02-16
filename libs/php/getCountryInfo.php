@@ -31,6 +31,24 @@ if (!isset($_GET['iso2']) || empty($_GET['iso2'])) {
 $iso2 = $_GET['iso2'];
 $username = $_ENV['GEONAMES_USERNAME'] ?? getenv('GEONAMES_USERNAME');
 
+// Debug: Check if username is available
+if (empty($username)) {
+    echo json_encode([
+        'status' => [
+            'code' => 500,
+            'name' => 'Configuration Error',
+            'description' => 'GEONAMES_USERNAME is not configured',
+            'debug' => [
+                '_ENV' => isset($_ENV['GEONAMES_USERNAME']) ? 'set but empty' : 'not set',
+                'getenv' => getenv('GEONAMES_USERNAME') ? 'set' : 'not set'
+            ],
+            'seconds' => number_format((microtime(true) - $executionStartTime), 3)
+        ],
+        'data' => null
+    ]);
+    exit;
+}
+
 $url = "http://api.geonames.org/countryInfoJSON?country=$iso2&username=$username";
 
 
@@ -85,6 +103,8 @@ if (!isset($data['geonames']) || empty($data['geonames'])) {
             'code' => 404,
             'name' => 'Not Found',
             'description' => 'No country information found',
+            'api_url' => $url,
+            'api_response' => $data,
             'seconds' => number_format((microtime(true) - $executionStartTime), 3)
         ],
         'data' => null

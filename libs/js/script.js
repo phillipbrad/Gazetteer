@@ -415,6 +415,15 @@ function getCountryInfo(iso_a2) {
             // Check if response has the expected structure
             if (!response.geonames || !response.geonames[0]) {
                 console.error('Invalid country info response structure:', response);
+                if (response.status) {
+                    console.error('API Error:', response.status);
+                    if (response.status.api_response) {
+                        console.error('GeoNames API returned:', response.status.api_response);
+                    }
+                    if (response.status.api_url) {
+                        console.error('API URL:', response.status.api_url);
+                    }
+                }
                 $('#countryNameData').text('N/A');
                 $('#capitalData').text('N/A');
                 $('#continentData').text('N/A');
