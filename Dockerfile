@@ -1,8 +1,14 @@
 # Use official PHP with Apache
 FROM php:8.1-apache
 
-# Install curl extension for API calls
-RUN docker-php-ext-install curl || true
+# Install system dependencies and curl library
+RUN apt-get update && apt-get install -y \
+    libcurl4-openssl-dev \
+    pkg-config \
+    libssl-dev \
+    && docker-php-ext-install curl \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
 # Enable Apache mod_rewrite
 RUN a2enmod rewrite
